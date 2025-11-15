@@ -2,7 +2,7 @@
   <div class="nest-container">
     <!-- 巢穴头部信息 -->
     <div class="nest-header">
-      <h3 class="nest-title">🏰 衍生之圣巢</h3>
+      <h3 class="nest-title">🏰 衍生之圣域</h3>
       <div class="income-summary">
         <div v-if="totalIncome.gold > 0" class="income-item">
           <span class="income-icon">💰</span>
