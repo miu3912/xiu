@@ -176,13 +176,13 @@ export class BreedingService {
     const goblinsPerSlave = Math.floor(Math.random() * 3) + 2; // 2-4个
     const totalNewGoblins = slaveCount * goblinsPerSlave;
 
-    // 提高奴隶死亡率：40-70%（原来是20-40%）
+    // 提高奴隶逃跑率：40-70%（原来是20-40%）
     const deathRate = (Math.random() * 0.3 + 0.4) * 100; // 40-70%
     const deadSlaves = Math.floor((slaveCount * deathRate) / 100);
     const remainingSlaves = slaveCount - deadSlaves;
 
     messages.push(`奴隶们生育了 ${totalNewGoblins} 个普通衍生物`);
-    messages.push(`${deadSlaves} 个奴隶死亡 (死亡率: ${deathRate.toFixed(1)}%)`);
+    messages.push(`${deadSlaves} 个奴隶逃跑 (逃跑率: ${deathRate.toFixed(1)}%)`);
     messages.push(`剩余奴隶: ${remainingSlaves} 个`);
 
     return {

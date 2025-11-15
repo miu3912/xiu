@@ -93,7 +93,7 @@ export class WorldbookHelper {
    * 检查是否为player角色
    */
   static isPlayerCharacter(characterId: string, characterName: string, characterStatus?: string): boolean {
-    return characterStatus === 'player' || characterId === 'player-1' || characterName === '衍生物之王';
+    return characterStatus === 'player' || characterId === 'player-1' || characterName === '哥布林之王';
   }
 
   /**

@@ -1064,7 +1064,7 @@ export class ModularSaveManager {
    */
   getCurrentWorldbookName(): string {
     // 始终使用默认世界书，通过数据库管理不同存档的世界书内容
-    return '衍生之圣巢-人物档案';
+    return '哥布林巢穴-人物档案';
   }
 
   /**
@@ -1076,7 +1076,7 @@ export class ModularSaveManager {
       let currentWorldbook: any[] = [];
 
       try {
-        currentWorldbook = await window.TavernHelper.getWorldbook('衍生之圣巢-人物档案');
+        currentWorldbook = await window.TavernHelper.getWorldbook('哥布林巢穴-人物档案');
         console.log(`从默认世界书获取到 ${currentWorldbook.length} 个条目`);
       } catch (error) {
         console.log('默认世界书不存在或为空，保存空的世界书数据');
@@ -1097,7 +1097,7 @@ export class ModularSaveManager {
   async restoreWorldbookFromDatabase(slot: number): Promise<void> {
     try {
       const saveId = `slot_${slot}`;
-      const defaultWorldbookName = '衍生之圣巢-人物档案';
+      const defaultWorldbookName = '哥布林巢穴-人物档案';
 
       // 从数据库读取世界书数据
       const worldbookData = await databaseService.loadWorldbookData(saveId);
@@ -1260,7 +1260,7 @@ export class ModularSaveManager {
    */
   async ensureDefaultWorldbook(): Promise<void> {
     try {
-      const defaultWorldbookName = '衍生之圣巢-人物档案';
+      const defaultWorldbookName = '哥布林巢穴-人物档案';
       const exists = await this.checkWorldbookExists(defaultWorldbookName);
       if (!exists) {
         console.log('创建默认世界书...');
@@ -1277,7 +1277,7 @@ export class ModularSaveManager {
    */
   async getCurrentBoundWorldbookName(): Promise<string | null> {
     // 始终使用默认世界书，通过数据库管理不同存档的世界书内容
-    return '衍生之圣巢-人物档案';
+    return '哥布林巢穴-人物档案';
   }
 
   /**
