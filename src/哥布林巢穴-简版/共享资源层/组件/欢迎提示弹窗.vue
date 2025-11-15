@@ -2,7 +2,7 @@
   <div v-if="show" class="welcome-modal-overlay" @click="handleOverlayClick">
     <div class="welcome-modal" @click.stop>
       <div class="modal-header">
-        <h2>🎮 欢迎游玩衍生物巢穴</h2>
+        <h2>🎮 欢迎游玩哥布林巢穴</h2>
       </div>
 
       <div class="modal-content">

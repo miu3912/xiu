@@ -163,7 +163,7 @@ const emit = defineEmits<{
 }>();
 
 // 常量 - 固定世界书名称
-const WORLDBOOK_NAME = '衍生之圣巢-人物档案';
+const WORLDBOOK_NAME = '衍生物巢穴-人物档案';
 
 // 状态
 const availableEntries = ref({ conquest: 0, characters: 0, events: 0 });

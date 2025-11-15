@@ -287,8 +287,8 @@ const currentChainFormat = ref('');
 const chainFileInput = ref<HTMLInputElement | null>(null);
 
 // 玩家角色信息
-const playerName = ref('衍生物之王');
-const playerTitle = ref('衍生物巢穴之主');
+const playerName = ref('哥布林之王');
+const playerTitle = ref('哥布林巢穴之主');
 const playerAvatar = ref('https://files.catbox.moe/x4g8t7.jpg');
 
 // 文件上传相关
@@ -362,8 +362,8 @@ const loadPlayerInfo = () => {
     if (trainingData && trainingData.characters) {
       const playerCharacter = trainingData.characters.find((char: any) => char.id === 'player-1');
       if (playerCharacter) {
-        playerName.value = playerCharacter.name || '衍生物之王';
-        playerTitle.value = playerCharacter.title || '衍生物巢穴之主';
+        playerName.value = playerCharacter.name || '哥布林之王';
+        playerTitle.value = playerCharacter.title || '哥布林巢穴之主';
         playerAvatar.value = playerCharacter.avatar || 'https://files.catbox.moe/x4g8t7.jpg';
 
         console.log('📋 已加载玩家角色信息:', {
@@ -537,7 +537,7 @@ const exportChainFormats = async () => {
     // 构建导出数据
     const exportData = {
       version: '1.0',
-      description: '衍生物巢穴思维链格式（包含所有模式）',
+      description: '哥布林巢穴思维链格式（包含所有模式）',
       chains,
       exportedAt: new Date().toISOString(),
     };
@@ -748,8 +748,8 @@ const savePlayerInfo = async () => {
     }
 
     // 更新玩家角色信息（保持ID和status不变）
-    trainingData.characters[playerIndex].name = playerName.value.trim() || '衍生物之王';
-    trainingData.characters[playerIndex].title = playerTitle.value.trim() || '衍生物巢穴之主';
+    trainingData.characters[playerIndex].name = playerName.value.trim() || '哥布林之王';
+    trainingData.characters[playerIndex].title = playerTitle.value.trim() || '哥布林巢穴之主';
     trainingData.characters[playerIndex].avatar = playerAvatar.value.trim() || 'https://files.catbox.moe/x4g8t7.jpg';
 
     // 确保玩家角色的关键属性不被修改

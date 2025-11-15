@@ -2,7 +2,7 @@
   <div v-if="show" class="sacrifice-dialog-overlay" @click.self="handleClose">
     <div class="sacrifice-dialog">
       <div class="dialog-header">
-        <h4>🔥 献祭衍生物升级等级</h4>
+        <h4>🔥 献祭哥布林升级等级</h4>
         <button class="close-dialog" @click="handleClose">×</button>
       </div>
       <div class="dialog-content">
@@ -116,7 +116,7 @@ const emit = defineEmits<{
   (e: 'confirm', characterId: string, amounts: SacrificeAmounts): void;
 }>();
 
-// 衍生物类型配置（从服务中获取）
+// 哥布林类型配置（从服务中获取）
 const goblinTypes = SacrificeService.GOBLIN_TYPES;
 
 // 可升级人物列表
@@ -153,7 +153,7 @@ const currentCharacterLevel = computed(() => {
 });
 
 /**
- * 获取指定类型的衍生物数量
+ * 获取指定类型的哥布林数量
  */
 const getGoblinCount = (goblinTypeId: keyof SacrificeAmounts): number => {
   return SacrificeService.getGoblinCount(goblinTypeId);
@@ -209,7 +209,7 @@ const canLevelUp = computed(() => {
 // ==================== 方法 ====================
 
 /**
- * 增加指定类型的衍生物数量（每次增加升1级所需的固定数量）
+ * 增加指定类型的哥布林数量（每次增加升1级所需的固定数量）
  */
 const increaseGoblin = (goblinTypeId: keyof SacrificeAmounts) => {
   const goblinType = goblinTypes.find(t => t.id === goblinTypeId);
@@ -230,7 +230,7 @@ const increaseGoblin = (goblinTypeId: keyof SacrificeAmounts) => {
 };
 
 /**
- * 减少指定类型的衍生物数量（每次减少升1级所需的固定数量）
+ * 减少指定类型的哥布林数量（每次减少升1级所需的固定数量）
  */
 const decreaseGoblin = (goblinTypeId: keyof SacrificeAmounts) => {
   const goblinType = goblinTypes.find(t => t.id === goblinTypeId);

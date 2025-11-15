@@ -649,12 +649,12 @@ const updateTrainingCharactersCount = () => {
   }
 };
 
-// 同步产卵室占用信息到巢穴模块
+// 同步产卵间占用信息到巢穴模块
 const syncBreedingRoomInfo = () => {
   try {
     const breedingRoomInfo: any[] = [];
 
-    // 遍历所有人物，找出占用产卵室的人物
+    // 遍历所有人物，找出占用产卵间的人物
     characters.value.forEach(char => {
       if (char.locationId && char.locationId.startsWith('breeding-')) {
         breedingRoomInfo.push({
@@ -679,16 +679,16 @@ const syncBreedingRoomInfo = () => {
       },
     });
 
-    console.log('产卵室占用信息已同步到巢穴模块');
+    console.log('产卵间占用信息已同步到巢穴模块');
   } catch (error) {
-    console.error('同步产卵室信息失败:', error);
+    console.error('同步产卵间信息失败:', error);
   }
 };
 
 // 保存调教数据
 const saveTrainingData = () => {
   try {
-    // 同步人物状态和产卵室信息
+    // 同步人物状态和产卵间信息
     syncCharacterStatuses();
     syncBreedingRoomInfo();
 
@@ -899,7 +899,7 @@ const startFertility = async (character: Character) => {
   if (availableBreedingRooms.length === 0) {
     // 返还行动力（没有可用设施）
     actionPointsService.refundActionPoints('singleBreeding');
-    toastRef.value?.warning('没有可用的交配间，请先在巢穴界面建设产卵室！', { title: '缺少设施', duration: 4000 });
+    toastRef.value?.warning('没有可用的交配间，请先在巢穴界面建设产卵间！', { title: '缺少设施', duration: 4000 });
     showCharacterMenu.value = false;
     return;
   }
@@ -1676,15 +1676,15 @@ const playCorruptionAnimation = async (character: Character): Promise<void> => {
   });
 };
 
-// 释放人物
+// 处决人物
 const executeCharacter = async (character: Character) => {
   const confirmed = await ConfirmService.showDanger(
-    `确定要释放 ${character.name} 吗？`,
-    '确认释放',
-    `释放后将获得资源奖励，但人物将永久消失！\n\n人物评级：${character.rating || '未评级'}`,
+    `确定要处决 ${character.name} 吗？`,
+    '确认处决',
+    `处决后将获得资源奖励，但人物将永久消失！\n\n人物评级：${character.rating || '未评级'}`,
   );
   if (confirmed) {
-    // 计算释放奖励（根据人物稀有度）
+    // 计算处决奖励（根据人物稀有度）
     const rewardMultiplier = {
       S: 3,
       A: 2.5,
@@ -1701,9 +1701,9 @@ const executeCharacter = async (character: Character) => {
     const goldReward = Math.floor(baseGold * multiplier);
     const foodReward = Math.floor(baseFood * multiplier);
 
-    // 添加资源奖励（释放不再增加威胁度）
-    modularSaveManager.addResource('gold', goldReward, `释放${character.name}获得`);
-    modularSaveManager.addResource('food', foodReward, `释放${character.name}获得`);
+    // 添加资源奖励（处决不再增加威胁度）
+    modularSaveManager.addResource('gold', goldReward, `处决${character.name}获得`);
+    modularSaveManager.addResource('food', foodReward, `处决${character.name}获得`);
 
     // 从人物列表中移除
     const index = characters.value.findIndex(c => c.id === character.id);
@@ -1727,10 +1727,10 @@ const executeCharacter = async (character: Character) => {
     showCharacterMenu.value = false;
     closeCharacterModal();
 
-    // 显示释放成功消息
+    // 显示处决成功消息
     toastRef.value?.success(
-      `释放成功！获得奖励：💰 金币 +${goldReward}，🍖 食物 +${foodReward}。${character.name} 已被永久释放。`,
-      { title: '释放完成', duration: 5000 },
+      `处决成功！获得奖励：💰 金币 +${goldReward}，🍖 食物 +${foodReward}。${character.name} 已被永久处决。`,
+      { title: '处决完成', duration: 5000 },
     );
 
     // 直接更新界面，不需要重新加载数据
@@ -2080,7 +2080,7 @@ const getStatusText = (status: string) => {
   const statusMap: Record<string, string> = {
     imprisoned: '关押中',
     training: '调教中',
-    breeding: '交配中',
+    breeding: '产卵中',
     surrendered: '已堕落',
     deployed: '已编制',
   };
@@ -2163,16 +2163,16 @@ const batchBreeding = async () => {
   if (availableBreedingRooms.length === 0) {
     // 返还行动力（没有可用设施）
     actionPointsService.refundActionPoints('batchBreeding');
-    toastRef.value?.warning('没有可用的交配间，请先在巢穴界面建设产卵室！', { title: '缺少设施', duration: 4000 });
+    toastRef.value?.warning('没有可用的交配间，请先在巢穴界面建设产卵间！', { title: '缺少设施', duration: 4000 });
     return;
   }
 
-  // 如果产卵室数量不足，显示确认框
+  // 如果产卵间数量不足，显示确认框
   if (availableBreedingRooms.length < eligibleCharacters.length) {
     const confirmed = await ConfirmService.showWarning(
-      `检测到产卵室数量不足！`,
+      `检测到产卵间数量不足！`,
       '确认批量生育',
-      `当前有 ${eligibleCharacters.length} 个人物符合生育条件，但只有 ${availableBreedingRooms.length} 个产卵室可用。\n\n继续操作将按优先级为前 ${availableBreedingRooms.length} 个人物分配产卵室，剩余 ${eligibleCharacters.length - availableBreedingRooms.length} 个人物将无法进行生育。\n\n是否继续？`,
+      `当前有 ${eligibleCharacters.length} 个人物符合生育条件，但只有 ${availableBreedingRooms.length} 个产卵间可用。\n\n继续操作将按优先级为前 ${availableBreedingRooms.length} 个人物分配产卵间，剩余 ${eligibleCharacters.length - availableBreedingRooms.length} 个人物将无法进行生育。\n\n是否继续？`,
     );
 
     if (!confirmed) {

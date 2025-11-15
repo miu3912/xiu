@@ -2,7 +2,7 @@
   <div class="nest-container">
     <!-- 巢穴头部信息 -->
     <div class="nest-header">
-      <h3 class="nest-title">🏰 衍生之圣域</h3>
+      <h3 class="nest-title">🏰 衍生之圣巢</h3>
       <div class="income-summary">
         <div v-if="totalIncome.gold > 0" class="income-item">
           <span class="income-icon">💰</span>
@@ -325,10 +325,10 @@ const breedingBuildings: Building[] = [
     id: 'breeding',
     name: '产卵室',
     icon: '👶',
-    description: '用于产卵孵化衍生物',
+    description: '用于俘虏孵蛋产卵衍生物',
     cost: { gold: 50, food: 30 },
     category: 'breeding',
-    effects: [{ type: 'breeding', icon: '👶', description: '用于产卵孵化衍生物' }],
+    effects: [{ type: 'breeding', icon: '👶', description: '俘虏生育衍生物' }],
   },
 ];
 
@@ -361,7 +361,7 @@ const resourceBuildings: Building[] = [
     name: '食物仓库',
     icon: '🏚️',
     description: '提高食物储存，食物总收入+10%',
-    cost: { gold: 2000, food: 1200 },
+    cost: { gold: 200, food: 120 },
     category: 'resource',
     effects: [{ type: 'food_multiplier', icon: '🍖', description: '食物收入+10%' }],
   },
@@ -370,7 +370,7 @@ const resourceBuildings: Building[] = [
     name: '金币大厅',
     icon: '🏦',
     description: '改善金币储存，金币总收入+10%',
-    cost: { gold: 2600, food: 800 },
+    cost: { gold: 260, food: 80 },
     category: 'resource',
     effects: [{ type: 'gold_multiplier', icon: '💰', description: '金钱收入+10%' }],
   },

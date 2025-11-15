@@ -44,7 +44,9 @@
                 <!-- 等级标签 -->
                 <div class="character-level-badge">
                   <span class="level-icon">LV.</span>
-                  <span class="level-value">{{ internalCharacter.level ?? 1 }}</span>
+                  <span class="level-value">{{
+                    internalCharacter.level ?? Math.floor((internalCharacter.offspring ?? 0) / 10) ?? 1
+                  }}</span>
                 </div>
               </div>
             </div>
@@ -182,6 +184,52 @@
                 </div>
                 <div class="stat-value-detail">
                   {{ internalCharacter.stamina }}/{{ internalCharacter.maxStamina || 200 }}
+                </div>
+              </div>
+              <div class="stat-detail">
+                <div class="stat-label">
+                  <span class="stat-icon">🤱</span>
+                  生育值
+                </div>
+                <div class="stat-bar-detail">
+                  <div
+                    class="stat-fill-detail"
+                    :style="{
+                      width: (internalCharacter.fertility / (internalCharacter.maxFertility || 200)) * 100 + '%',
+                    }"
+                    :class="getFertilityClass(internalCharacter.fertility, internalCharacter.maxFertility || 200)"
+                  ></div>
+                </div>
+                <div class="stat-value-detail">
+                  {{ internalCharacter.fertility }}/{{ internalCharacter.maxFertility || 200 }}
+                </div>
+              </div>
+              <div class="stat-detail">
+                <div class="stat-label">
+                  <span class="stat-icon">👶</span>
+                  后代数量
+                </div>
+                <div class="stat-value-detail">{{ internalCharacter.offspring }}</div>
+              </div>
+
+              <!-- 生育记录显示 -->
+              <div
+                v-if="internalCharacter.breedingRecords && internalCharacter.breedingRecords.length > 0"
+                class="breeding-records"
+              >
+                <h4>
+                  <span class="section-icon">👶</span>
+                  生育记录
+                </h4>
+                <div class="breeding-stats">
+                  <div
+                    v-for="(count, type) in getBreedingStats(internalCharacter.breedingRecords)"
+                    :key="type"
+                    class="breeding-stat"
+                  >
+                    <span class="goblin-type">{{ type }}</span>
+                    <span class="goblin-count">x{{ count }}</span>
+                  </div>
                 </div>
               </div>
             </div>
@@ -431,6 +479,7 @@ import { AvatarSwitchService } from '../../功能模块层/人物管理/服务/�
 import type { Character } from '../../功能模块层/人物管理/类型/人物类型';
 import { modularSaveManager } from '../../核心层/服务/存档系统/模块化存档服务';
 import { TimeParseService } from '../../核心层/服务/通用服务/时间解析服务';
+import { BreedingService } from '../../核心层/服务/通用服务/生育服务';
 // 导入本地组件
 import CharacterJSONEditor from './人物信息JSON编辑界面.vue';
 
@@ -530,6 +579,19 @@ const getStaminaClass = (stamina: number, maxStamina: number) => {
   if (percentage >= 80) return 'high';
   if (percentage >= 50) return 'medium';
   return 'low';
+};
+
+// 获取生育值样式类
+const getFertilityClass = (fertility: number, maxFertility: number) => {
+  const percentage = (fertility / maxFertility) * 100;
+  if (percentage >= 80) return 'high';
+  if (percentage >= 50) return 'medium';
+  return 'low';
+};
+
+// 获取生育统计
+const getBreedingStats = (breedingRecords: any[]) => {
+  return BreedingService.getBreedingStats(breedingRecords);
 };
 
 // 获取敏感点（只返回敏感的那个部位）
@@ -1257,6 +1319,48 @@ const formatCapturedTime = (capturedAt?: Date | string): string => {
             font-size: 12px;
             min-width: 40px;
             text-align: right;
+          }
+        }
+      }
+
+      // 生育记录样式
+      .breeding-records {
+        margin-top: 15px;
+        padding: 10px;
+        background: rgba(139, 69, 19, 0.1);
+        border-radius: 8px;
+        border: 1px solid rgba(139, 69, 19, 0.3);
+
+        h4 {
+          margin: 0 0 10px 0;
+          color: #8b4513;
+          font-size: 14px;
+          font-weight: bold;
+        }
+
+        .breeding-stats {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 8px;
+        }
+
+        .breeding-stat {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+          padding: 4px 8px;
+          background: rgba(139, 69, 19, 0.2);
+          border-radius: 4px;
+          font-size: 12px;
+
+          .goblin-type {
+            color: #8b4513;
+            font-weight: bold;
+          }
+
+          .goblin-count {
+            color: #d2691e;
+            font-weight: bold;
           }
         }
       }

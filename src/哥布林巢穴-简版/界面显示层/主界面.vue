@@ -520,7 +520,7 @@ const handleRandomEventCompleted = (event: any, result: any) => {
 // ============================================================================
 
 /**
- * 同步繁殖间占用信息到巢穴模块
+ * 同步产卵室占用信息到巢穴模块
  */
 const syncBreedingRoomInfo = () => {
   try {
@@ -551,9 +551,9 @@ const syncBreedingRoomInfo = () => {
       },
     });
 
-    console.log('繁殖间占用信息已同步到巢穴模块:', breedingRoomInfo);
+    console.log('产卵室占用信息已同步到巢穴模块:', breedingRoomInfo);
   } catch (error) {
-    console.error('同步繁殖间信息失败:', error);
+    console.error('同步产卵室信息失败:', error);
   }
 };
 
@@ -658,7 +658,7 @@ const processCharacterTurn = () => {
           modularSaveManager.addResource(
             resourceType,
             record.count,
-            `${character.name} 生育了 ${record.count} 个${resourceName}`,
+            `${character.name} 生育了 ${record.count} 个衍生物`,
           );
         });
 
@@ -783,9 +783,9 @@ const endRound = async () => {
     if (breedingResults && breedingResults.length > 0) {
       const topBreedingResults = breedingResults.slice(0, 2);
       const breedingNames = topBreedingResults.map(result => result.characterName).join('、');
-      titleParts.push(`${breedingNames} 孵化了衍生物的蛋`);
+      titleParts.push(`${breedingNames} 大量产卵了`);
     } else if (slaveBreedingResult.newGoblins > 0) {
-      titleParts.push(`奴隶生育了 ${slaveBreedingResult.newGoblins} 个衍生物`);
+      titleParts.push(`奴隶产下了 ${slaveBreedingResult.newGoblins} 个衍生物之卵，达标奴隶已洗去记忆完成释放`);
     }
 
     if (titleParts.length > 0) {
@@ -810,13 +810,13 @@ const endRound = async () => {
     // 保存游戏状态
     saveCurrentGameState();
 
-    // 同步繁殖间占用信息到巢穴模块
-    console.log('开始同步繁殖间占用信息...');
+    // 同步产卵室占用信息到巢穴模块
+    console.log('开始同步产卵室占用信息...');
     try {
       syncBreedingRoomInfo();
-      console.log('繁殖间占用信息同步完成');
+      console.log('产卵室占用信息同步完成');
     } catch (error) {
-      console.error('同步繁殖间占用信息失败:', error);
+      console.error('同步产卵室占用信息失败:', error);
     }
 
     // 更新资源世界书条目

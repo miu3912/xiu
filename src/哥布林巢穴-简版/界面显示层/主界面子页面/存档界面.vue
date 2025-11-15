@@ -286,10 +286,10 @@ const exportSingleSave = async (slot: number) => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `哥布林巢穴-存档${slot}-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `衍生物巢穴-存档${slot}-${new Date().toISOString().slice(0, 10)}.json`;
 
     // 设置下载属性以提升兼容性
-    a.setAttribute('download', `哥布林巢穴-存档${slot}-${new Date().toISOString().slice(0, 10)}.json`);
+    a.setAttribute('download', `衍生物巢穴-存档${slot}-${new Date().toISOString().slice(0, 10)}.json`);
 
     document.body.appendChild(a);
 
@@ -360,10 +360,10 @@ const exportAllSaves = async () => {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `哥布林巢穴-全部存档-${new Date().toISOString().slice(0, 10)}.json`;
+    a.download = `衍生物巢穴-全部存档-${new Date().toISOString().slice(0, 10)}.json`;
 
     // 设置下载属性以提升兼容性
-    a.setAttribute('download', `哥布林巢穴-全部存档-${new Date().toISOString().slice(0, 10)}.json`);
+    a.setAttribute('download', `衍生物巢穴-全部存档-${new Date().toISOString().slice(0, 10)}.json`);
 
     document.body.appendChild(a);
 

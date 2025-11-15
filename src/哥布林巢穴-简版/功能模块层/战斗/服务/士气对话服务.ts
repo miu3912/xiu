@@ -250,16 +250,16 @@ export class MoraleDialogueService {
         if (ally.troops) {
           const troops = ally.troops;
           if (troops.normalGoblins && troops.normalGoblins > 0) {
-            yamlContent += `      普通衍生物: ${troops.normalGoblins}\n`;
+            yamlContent += `      普通哥布林: ${troops.normalGoblins}\n`;
           }
           if (troops.warriorGoblins && troops.warriorGoblins > 0) {
-            yamlContent += `      衍生物战士: ${troops.warriorGoblins}\n`;
+            yamlContent += `      哥布林战士: ${troops.warriorGoblins}\n`;
           }
           if (troops.shamanGoblins && troops.shamanGoblins > 0) {
-            yamlContent += `      衍生物萨满: ${troops.shamanGoblins}\n`;
+            yamlContent += `      哥布林萨满: ${troops.shamanGoblins}\n`;
           }
           if (troops.paladinGoblins && troops.paladinGoblins > 0) {
-            yamlContent += `      衍生物圣骑士: ${troops.paladinGoblins}\n`;
+            yamlContent += `      哥布林圣骑士: ${troops.paladinGoblins}\n`;
           }
         }
       });

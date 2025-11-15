@@ -209,7 +209,7 @@ export class AILocationGenerationService {
    */
   private static readonly LOCATION_GENERATION_PROMPT = `
 # 据点侦察模式规则：
-1. 生成指定数量的符合衍生之圣巢游戏设定和当前大陆/区域特色的据点
+1. 生成指定数量的符合哥布林巢穴游戏设定和当前大陆/区域特色的据点
 2. 难度要合理分布，奖励要与难度匹配
 3. ***specialUnit不允许是人物，只允许是部队***
 4. ***此模式只输出侦察json数据，无需输出剧情正文***
