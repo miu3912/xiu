@@ -137,10 +137,10 @@ const fieldNameMap: Record<string, string> = {
   currentState: '当前状态',
 
   // 部队编制子字段
-  normalGoblins: '普通哥布林',
-  warriorGoblins: '哥布林战士',
-  shamanGoblins: '哥布林萨满',
-  paladinGoblins: '哥布林圣骑士',
+  normalGoblins: '普通衍生物',
+  warriorGoblins: '衍生物战士',
+  shamanGoblins: '衍生物萨满',
+  paladinGoblins: '衍生物圣骑士',
 
   // 额外附加信息
   additionalInformation: '额外附加信息',

@@ -383,7 +383,17 @@ const resourceBuildings: Building[] = [
     category: 'resource',
     effects: [{ type: 'sacrifice', icon: '🔥', description: '献祭衍生物升级等级' }],
   },
+   {
+    id: 'essence_forge',
+    name: '衍生物熔炉',
+    icon: '⚒️',
+    description: '消耗大量金币和食物塑造衍生物',
+    cost: { gold: 50000000000, food: 25000000000 }, // 500亿金币 + 250亿食物
+    category: 'resource',
+    effects: [{ type: 'essence_production', icon: '👤', description: '塑造衍生物' }],
+  },
 ];
+
 
 // ==================== 计算属性 ====================
 
