@@ -6,11 +6,11 @@
       <div class="income-summary">
         <div v-if="totalIncome.gold > 0" class="income-item">
           <span class="income-icon">💰</span>
-          <span class="income-amount">+{{ totalIncome.gold }}</span>
+          <span class="income-amount">+{{ formatNumber(totalIncome.gold) }}</span>
         </div>
         <div v-if="totalIncome.food > 0" class="income-item">
           <span class="income-icon">🍖</span>
-          <span class="income-amount">+{{ totalIncome.food }}</span>
+          <span class="income-amount">+{{ formatNumber(totalIncome.food) }}</span>
         </div>
         <div class="income-label">每回合</div>
       </div>
@@ -48,9 +48,7 @@
                 <div v-if="slot.building.id === 'breeding'" class="breeding-status">
                   <div v-if="getBreedingRoomOccupant(index)" class="occupied-status">
                     <span class="occupant-name">{{ getBreedingRoomOccupant(index)?.name }}</span>
-                    <span class="occupant-status">{{
-                      getBreedingRoomOccupant(index)?.status === 'breeding' ? '交配中' : '待命'
-                    }}</span>
+                    <span class="occupant-status">{{ getBreedingRoomOccupant(index)?.status === 'breeding' ? '交配中' : '待命' }}</span>
                   </div>
                   <div v-else class="available-status">
                     <span class="available-text">空闲</span>
@@ -72,7 +70,7 @@
               <div v-else-if="isNextUnlockSlot(index, 'breeding')" class="next-unlock-slot">
                 <div class="expand-icon">+</div>
                 <div class="expand-text">开通槽位</div>
-                <div class="expand-cost">{{ getSlotCost(index).gold }}💰 {{ getSlotCost(index).food }}🍖</div>
+                <div class="expand-cost">{{ formatNumber(getSlotCost(index).gold) }}💰 {{ formatNumber(getSlotCost(index).food) }}🍖</div>
               </div>
 
               <!-- 锁定槽位 -->
@@ -105,17 +103,22 @@
                 <div v-if="slot.building.income" class="building-income">
                   <div v-if="slot.building.income.gold" class="income-display">
                     <span class="income-icon">💰</span>
-                    <span class="income-text">+{{ slot.building.income.gold }}</span>
+                    <span class="income-text">+{{ formatNumber(slot.building.income.gold) }}</span>
                   </div>
                   <div v-if="slot.building.income.food" class="income-display">
                     <span class="income-icon">🍖</span>
-                    <span class="income-text">+{{ slot.building.income.food }}</span>
+                    <span class="income-text">+{{ formatNumber(slot.building.income.food) }}</span>
                   </div>
                 </div>
 
                 <!-- 献祭祭坛特殊交互 -->
                 <div v-if="slot.building.id === 'sacrifice_altar'" class="sacrifice-button-container">
                   <button class="sacrifice-button" @click.stop="openSacrificeDialog(index)">献祭</button>
+                </div>
+
+                <!-- 衍生物熔炉特殊交互 -->
+                <div v-if="slot.building.id === 'essence_forge'" class="shape-button-container">
+                  <button class="shape-button" @click.stop="openEssenceShapeDialog(index)">塑造</button>
                 </div>
 
                 <button class="remove-button" title="拆除建筑" @click.stop="removeBuilding(index, 'resource')">
@@ -133,7 +136,7 @@
               <div v-else-if="isNextUnlockSlot(index, 'resource')" class="next-unlock-slot">
                 <div class="expand-icon">+</div>
                 <div class="expand-text">开通槽位</div>
-                <div class="expand-cost">{{ getSlotCost(index).gold }}💰 {{ getSlotCost(index).food }}🍖</div>
+                <div class="expand-cost">{{ formatNumber(getSlotCost(index).gold) }}💰 {{ formatNumber(getSlotCost(index).food) }}🍖</div>
               </div>
 
               <!-- 锁定槽位 -->
@@ -166,19 +169,23 @@
             <div class="option-name">{{ building.name }}</div>
             <div class="option-desc">{{ building.description }}</div>
           </div>
-          <div class="option-cost">{{ building.cost.gold }}💰 {{ building.cost.food }}🍖</div>
+          <div class="option-cost">{{ formatCost(building.cost) }}</div>
         </div>
       </div>
     </div>
 
     <!-- 献祭对话框 -->
     <SacrificeDialog :show="showSacrificeDialog" @close="closeSacrificeDialog" @confirm="handleSacrificeConfirm" />
+
+    <!-- 衍生物塑造对话框 -->
+    <EssenceShapeDialog :show="showEssenceShapeDialog" @close="closeEssenceShapeDialog" @confirm="handleEssenceShapeConfirm" />
   </div>
 </template>
 
 <script setup lang="ts">
 import { computed, onActivated, onMounted, ref, watch } from 'vue';
 import SacrificeDialog from '../共享资源层/组件/献祭对话框.vue';
+import EssenceShapeDialog from '../共享资源层/组件/衍生物塑造对话框.vue';
 import { modularSaveManager } from '../核心层/服务/存档系统/模块化存档服务';
 import type { NestModuleData } from '../核心层/服务/存档系统/模块化存档类型';
 import { SacrificeService, type SacrificeAmounts } from '../核心层/服务/通用服务/献祭服务';
@@ -315,6 +322,12 @@ const characters = ref<any[]>([]);
 const showSacrificeDialog = ref(false);
 const currentSacrificeSlotIndex = ref(-1);
 
+// ==================== 衍生物塑造相关数据 ====================
+
+// 衍生物塑造对话框状态
+const showEssenceShapeDialog = ref(false);
+const currentShapeSlotIndex = ref(-1);
+
 // ==================== 建筑数据定义 ====================
 
 /**
@@ -383,17 +396,17 @@ const resourceBuildings: Building[] = [
     category: 'resource',
     effects: [{ type: 'sacrifice', icon: '🔥', description: '献祭衍生物升级等级' }],
   },
-   {
+  // ============ 添加衍生物熔炉 ============
+  {
     id: 'essence_forge',
     name: '衍生物熔炉',
     icon: '⚒️',
-    description: '消耗大量金币和食物塑造衍生物',
+    description: '消耗金币和食物塑造衍生物',
     cost: { gold: 50000000000, food: 25000000000 }, // 500亿金币 + 250亿食物
     category: 'resource',
     effects: [{ type: 'essence_production', icon: '👤', description: '塑造衍生物' }],
   },
 ];
-
 
 // ==================== 计算属性 ====================
 
@@ -403,6 +416,8 @@ const resourceBuildings: Building[] = [
 const availableBuildings = computed(() => {
   const buildings = activeTab.value === 'breeding' ? breedingBuildings : resourceBuildings;
 
+  console.log('所有资源建筑:', buildings.map(b => b.name));
+  
   // 为产卵室计算动态成本
   if (activeTab.value === 'breeding') {
     return buildings.map(building => {
@@ -421,14 +436,17 @@ const availableBuildings = computed(() => {
   }
 
   // 资源建筑：过滤掉已存在的献祭祭坛（只允许建造1个）
-  return buildings.filter(building => {
+  const filteredBuildings = buildings.filter(building => {
     if (building.id === 'sacrifice_altar') {
-      // 检查是否已经有献祭祭坛
       const existingAltarCount = resourceSlots.value.filter(slot => slot.building?.id === 'sacrifice_altar').length;
-      return existingAltarCount === 0; // 如果已经有1个或以上，则不显示
+      console.log('献祭祭坛数量:', existingAltarCount);
+      return existingAltarCount === 0;
     }
     return true;
   });
+  
+  console.log('过滤后的建筑:', filteredBuildings.map(b => b.name));
+  return filteredBuildings;
 });
 
 /**
@@ -467,6 +485,29 @@ const totalIncome = computed(() => {
 
   return { gold: totalGold, food: totalFood };
 });
+
+// ==================== 格式化函数 ====================
+
+/**
+ * 格式化数字显示
+ */
+const formatNumber = (num: number): string => {
+  if (num >= 1000000000) {
+    return (num / 1000000000).toFixed(1) + 'b';
+  } else if (num >= 1000000) {
+    return (num / 1000000).toFixed(1) + 'm';
+  } else if (num >= 1000) {
+    return (num / 1000).toFixed(1) + 'k';
+  }
+  return num.toString();
+};
+
+/**
+ * 格式化建筑成本显示
+ */
+const formatCost = (cost: BuildingCost): string => {
+  return `${formatNumber(cost.gold)}💰 ${formatNumber(cost.food)}🍖`;
+};
 
 // ==================== 槽位管理 ====================
 
@@ -677,12 +718,21 @@ const closeMenu = () => {
  * 检查是否可以建设指定建筑
  */
 const canBuild = (building: Building) => {
+  console.log('检查建筑:', building.name, '成本:', building.cost);
+  
   // 检查献祭祭坛是否已存在（只允许建造1个）
   if (building.id === 'sacrifice_altar') {
     const existingAltarCount = resourceSlots.value.filter(slot => slot.building?.id === 'sacrifice_altar').length;
     if (existingAltarCount >= 1) {
-      return false; // 已经有一个献祭祭坛，不能再建造
+      console.log('献祭祭坛只能建造1个');
+      return false;
     }
+    return canAffordBuilding(building.cost);
+  }
+
+  // 衍生物熔炉没有数量限制，直接检查资源
+  if (building.id === 'essence_forge') {
+    console.log('检查衍生物熔炉资源:', canAffordBuilding(building.cost));
     return canAffordBuilding(building.cost);
   }
 
@@ -890,6 +940,10 @@ onMounted(() => {
   loadBuildingData();
   // 加载人物数据
   loadCharacters();
+  
+  // 调试信息
+  console.log('所有资源建筑:', resourceBuildings);
+  console.log('衍生物熔炉数据:', resourceBuildings.find(b => b.id === 'essence_forge'));
 });
 
 /**
@@ -1050,6 +1104,44 @@ const handleSacrificeConfirm = async (characterId: string, sacrificeAmounts: Sac
 
   // 关闭对话框
   closeSacrificeDialog();
+};
+
+// ==================== 衍生物塑造相关方法 ====================
+
+/**
+ * 打开塑造对话框
+ */
+const openEssenceShapeDialog = (slotIndex: number) => {
+  currentShapeSlotIndex.value = slotIndex;
+  showEssenceShapeDialog.value = true;
+};
+
+/**
+ * 关闭塑造对话框
+ */
+const closeEssenceShapeDialog = () => {
+  showEssenceShapeDialog.value = false;
+  currentShapeSlotIndex.value = -1;
+};
+
+/**
+ * 处理塑造确认
+ */
+const handleEssenceShapeConfirm = (result: any) => {
+  console.log('塑造衍生物成功:', result.message);
+  // 可以在这里显示成功提示
+  closeEssenceShapeDialog();
+};
+
+// ==================== 事件发射器 ====================
+
+/**
+ * 事件发射器（用于跨组件通信）
+ */
+const eventEmit = (eventName: string, data?: any) => {
+  // 这里可以使用你项目中的事件总线或provide/inject
+  // 暂时使用简单的控制台日志
+  console.log(`事件发射: ${eventName}`, data);
 };
 </script>
 
@@ -1571,6 +1663,8 @@ const handleSacrificeConfirm = async (characterId: string, sacrificeAmounts: Sac
   z-index: 1000;
   max-width: 500px;
   width: 90%;
+  max-height: 70vh;
+  overflow-y: auto;
 
   .menu-header {
     display: flex;
@@ -1694,6 +1788,35 @@ const handleSacrificeConfirm = async (characterId: string, sacrificeAmounts: Sac
     background: linear-gradient(180deg, #ef4444, #dc2626);
     transform: translateY(-1px);
     box-shadow: 0 2px 8px rgba(220, 38, 38, 0.4);
+  }
+
+  &:active {
+    transform: translateY(0);
+  }
+}
+
+// ==================== 衍生物熔炉相关样式 ====================
+
+.shape-button-container {
+  margin-top: 4px;
+}
+
+.shape-button {
+  background: linear-gradient(180deg, #3b82f6, #1d4ed8);
+  color: #ffffff;
+  border: none;
+  border-radius: 6px;
+  padding: 4px 8px;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  width: 100%;
+
+  &:hover {
+    background: linear-gradient(180deg, #60a5fa, #3b82f6);
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(59, 130, 246, 0.4);
   }
 
   &:active {
